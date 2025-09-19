@@ -57,7 +57,8 @@
 	"vectorize": [
 		{
 			"binding": "VECTORIZE_INDEX",
-			"index_name": "rag-embeddings-with-metadata"
+			"index_name": "rag-embeddings-with-metadata",
+			"remote": true
 		}
 	],
 	"vars": {

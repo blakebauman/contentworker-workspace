@@ -1,10 +1,15 @@
 import { DurableObject } from 'cloudflare:workers'
-
+import type { Env } from './context'
 import type { DeduplicationResult, DocumentLock, ProcessingState } from './types'
 
 export class DocumentCoordinator extends DurableObject {
+	private state: DurableObjectState
+	private env: Env
+
 	constructor(state: DurableObjectState, env: Env) {
 		super(state, env)
+		this.state = state
+		this.env = env
 	}
 
 	async fetch(request: Request): Promise<Response> {

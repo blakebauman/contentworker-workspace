@@ -117,7 +117,7 @@ export class QueueManager {
 				},
 			}
 
-			await this.env.DOCUMENT_INGESTION_QUEUE.send(message)
+			await this.env.DOCUMENT_INGESTION_QUEUE.send(message.payload)
 
 			console.log(
 				JSON.stringify({
@@ -242,7 +242,7 @@ export class QueueManager {
 				},
 			}
 
-			await this.env.WEBHOOK_PROCESSING_QUEUE.send(message)
+			await this.env.WEBHOOK_PROCESSING_QUEUE.send(message.payload)
 
 			console.log(
 				JSON.stringify({
@@ -302,7 +302,7 @@ export class QueueManager {
 				},
 			}
 
-			await this.env.BATCH_REPROCESSING_QUEUE.send(message)
+			await this.env.BATCH_REPROCESSING_QUEUE.send(message.payload)
 
 			console.log(
 				JSON.stringify({
@@ -357,7 +357,7 @@ export class QueueManager {
 				},
 			}
 
-			await this.env.DOCUMENT_INGESTION_QUEUE.send(message)
+			await this.env.DOCUMENT_INGESTION_QUEUE.send(message.payload)
 
 			console.log(
 				JSON.stringify({

@@ -29,9 +29,9 @@ log_error() {
 }
 
 # Default service URLs (modify these for your deployment)
-INGEST_SERVICE_URL="${INGEST_SERVICE_URL:-https://ingest-service.edgeprocure.workers.dev}"
-QUERY_SERVICE_URL="${QUERY_SERVICE_URL:-https://query-service.edgeprocure.workers.dev}"
-QUEUE_PROCESSOR_URL="${QUEUE_PROCESSOR_URL:-https://queue-processor.edgeprocure.workers.dev}"
+INGEST_SERVICE_URL="${INGEST_SERVICE_URL:-https://ingest.contentworker.io}"
+QUERY_SERVICE_URL="${QUERY_SERVICE_URL:-https://query.contentworker.io}"
+QUEUE_PROCESSOR_URL="${QUEUE_PROCESSOR_URL:-https://queue.contentworker.io}"
 
 # Test configuration
 TEST_TIMEOUT=30

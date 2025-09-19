@@ -35,7 +35,7 @@ wait_for_processing() {
         # Check document status via ingest service
         local status_response=$(curl -s "$INGEST_SERVICE_URL/status/$doc_id" 2>/dev/null || echo "")
 
-        if echo "$status_response" | jq -e '.exists == true' > /dev/null 2>&1; then
+        if echo "$status_response" | jq -e '.status == "found"' > /dev/null 2>&1; then
             log_success "Document $doc_id is available"
             return 0
         fi
