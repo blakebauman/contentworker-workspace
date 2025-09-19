@@ -1,0 +1,21 @@
+{
+	"name": "@repo/hono-rag-utils",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"main": "src/index.ts",
+	"types": "src/index.ts",
+	"scripts": {
+		"type-check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@hono/zod-validator": "0.7.2",
+		"hono": "4.9.7",
+		"zod": "4.1.9"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "4.20250917.0",
+		"@repo/typescript-config": "workspace:*",
+		"typescript": "5.9.2"
+	}
+}

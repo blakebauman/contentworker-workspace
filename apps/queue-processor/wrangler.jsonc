@@ -1,0 +1,68 @@
+{
+	"name": "queue-processor",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-03-07",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	},
+	"routes": [
+		{
+			"pattern": "queue.contentworker.io",
+			"custom_domain": true
+		}
+	],
+	"queues": {
+		"consumers": [
+			{
+				"queue": "document-ingestion",
+				"max_batch_size": 10,
+				"max_retries": 3
+			},
+			{
+				"queue": "webhook-processing",
+				"max_batch_size": 5,
+				"max_retries": 5
+			},
+			{
+				"queue": "batch-reprocessing",
+				"max_batch_size": 20,
+				"max_retries": 2
+			}
+		]
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "DOCUMENT_COORDINATOR",
+				"class_name": "DocumentCoordinator"
+			}
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_classes": ["DocumentCoordinator"]
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "DOCS_BUCKET",
+			"bucket_name": "rag-documents"
+		}
+	],
+	"ai": {
+		"binding": "AI"
+	},
+	"vectorize": [
+		{
+			"binding": "VECTORIZE_INDEX",
+			"index_name": "rag-embeddings-with-metadata"
+		}
+	],
+	"vars": {
+		"VECTORIZE_INDEX_ID": "rag-embeddings",
+		"AI_ACCOUNT_ID": "2d19b3b18648f0776ff1435cba466210"
+	}
+}

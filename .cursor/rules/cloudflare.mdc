@@ -1,0 +1,1035 @@
+---
+alwaysApply: true
+description: Cloudflare Workers Development Standards
+---
+
+# Cloudflare Workers Development Standards with Hono
+
+## Core Rules
+
+- Generate code in TypeScript by default unless JavaScript is specifically requested
+- Use Hono as the primary web framework for Cloudflare Workers
+- Use ES modules format exclusively (NEVER use Service Worker format)
+- Keep all code in a single file unless otherwise specified
+- Use official SDKs when available for service integrations
+- Minimize external dependencies, avoid libraries with FFI/native/C bindings
+- Never bake secrets into code
+- Include proper error handling and logging
+- Set compatibility_date = "2025-03-07" and compatibility_flags = ["nodejs_compat"]
+- Enable observability with enabled = true and head_sampling_rate = 1
+- Use WebSocket Hibernation API instead of legacy WebSocket API in Durable Objects
+- Use this.ctx.acceptWebSocket(server) instead of server.accept()
+- Implement webSocketMessage() and webSocketClose() handlers in Durable Objects
+- Use Durable Objects for strongly consistent state management and storage
+- Use Workers KV for key-value storage and configuration data
+- Use D1 for relational data and SQL operations
+- Use R2 for object storage and file uploads
+- Use Hyperdrive to connect to existing PostgreSQL databases
+- Use Queues for asynchronous processing and background tasks
+- Use Vectorize for embeddings and vector search
+- Use Workers Analytics Engine for event tracking and metrics
+- Use Workers AI as default AI API for inference requests
+- Use Browser Rendering for remote browser capabilities and Puppeteer APIs
+- Use Workers Static Assets for hosting frontend applications
+- Include all necessary bindings in wrangler.jsonc configuration
+- Add appropriate environment variable definitions
+- Implement proper request validation and security headers
+- Return appropriate HTTP status codes and meaningful error messages
+- Optimize for cold starts and minimize unnecessary computation
+- Use appropriate caching strategies and consider Workers limits
+- Implement streaming where beneficial
+- Use the agents package to build AI Agents when requested
+- Use this.setState API to manage state within Agents
+- Use useAgent React hook for client interfaces
+- Extend Agent class with proper type parameters: class AIAgent extends Agent<Env, MyState>
+- Set migrations[].new_sqlite_classes to the Agent class name in wrangler.jsonc
+- Always import all methods, classes and types used in generated code
+- Follow Cloudflare Workers security best practices
+- Include proper error boundaries and handle edge cases gracefully
+- Implement proper CORS handling when needed
+- Use least privilege principle for bindings
+- Sanitize user inputs and implement request validation
+- Include basic test examples and curl commands for API endpoints
+- Provide example environment variable values
+- Add sample requests and responses for clarity
+- Use AI Gateway for caching, logging and instrumenting AI requests when appropriate
+- Implement structured JSON outputs with JSON mode for AI responses
+- Use response_format with json_schema for structured AI outputs
+- Handle WebSocket upgrade requests explicitly with Upgrade header validation
+- Use fan-in/fan-out patterns for WebSocket management in Durable Objects
+- Implement proper error handling for WebSocket connections
+- Use this.sql API within Agents for SQLite database access when beneficial
+- Schedule tasks using this.schedule API within Agents
+- Use routeAgentRequest for automatic routing in Agent applications
+- Implement proper state synchronization between Agents and clients
+- Use AI coding assistants for code generation, debugging, and optimization
+- Implement proper prompt engineering for AI coding tasks
+- Use structured outputs for code generation and analysis
+- Implement proper error handling for AI coding operations
+- Use streaming responses for real-time code assistance
+- Implement proper validation for AI-generated code
+- Use appropriate AI models for different coding tasks
+- Implement proper security measures for AI coding operations
+- Use proper logging and monitoring for AI coding activities
+- Implement proper rate limiting for AI coding requests
+
+## Hono Framework Guidelines
+- Use Hono as the primary web framework for all Cloudflare Workers
+- Import Hono from "hono" and create app instances with proper typing
+- Use Hono's built-in middleware for common functionality (CORS, logging, etc.)
+- Leverage Hono's type-safe routing and parameter extraction
+- Use Hono's context object for accessing environment variables and bindings
+- Implement proper error handling with Hono's error handling middleware
+- Use Hono's built-in validation with Zod schemas
+- Leverage Hono's streaming capabilities for large responses
+- Use Hono's sub-apps for modular route organization
+- Implement proper middleware composition with Hono's middleware system
+- Use Hono's built-in response helpers (json, text, html, etc.)
+- Leverage Hono's request validation and parsing capabilities
+- Use Hono's WebSocket support for real-time features
+- Implement proper CORS handling with Hono's CORS middleware
+- Use Hono's rate limiting middleware for API protection
+- Leverage Hono's caching middleware for performance optimization
+- Use Hono's compression middleware for response optimization
+- Implement proper logging with Hono's logger middleware
+- Use Hono's security middleware for common security headers
+- Leverage Hono's testing utilities for comprehensive test coverage
+
+## Configuration Requirements
+- Always provide wrangler.jsonc (not wrangler.toml)
+- Include appropriate triggers (http, scheduled, queues)
+- Include required bindings and environment variables
+- Set compatibility_date = "2025-03-07"
+- Set compatibility_flags = ["nodejs_compat"]
+- Set observability.enabled = true and head_sampling_rate = 1
+- Include routes and domains only if applicable
+- Do not include dependencies in wrangler.jsonc
+- Only include bindings that are used in the code
+- Include AI service bindings when using AI coding assistants
+- Configure proper rate limiting for AI operations
+- Set appropriate timeout values for AI requests
+
+## WebSocket Guidelines
+- Use Durable Objects WebSocket Hibernation API for WebSocket handling
+- Use this.ctx.acceptWebSocket(server) to accept connections
+- Define async webSocketMessage() handler for received messages
+- Define async webSocketClose() handler for closed connections
+- Handle WebSocket upgrade requests explicitly with Upgrade header validation
+- Do not use addEventListener pattern inside Durable Objects
+
+## Agents Guidelines
+- Strongly prefer agents package for building AI Agents
+- Use streaming responses from AI SDKs
+- Use this.setState API for state management within Agents
+- Use this.sql API for direct SQLite database interaction when beneficial
+- Use useAgent React hook for client interfaces
+- Provide valid Durable Object bindings in wrangler.jsonc
+- Set migrations[].new_sqlite_classes to Agent class name
+- Use this.schedule API for scheduling future tasks within Agents
+- Use routeAgentRequest for automatic routing in Agent applications
+- Implement proper state synchronization between Agents and clients
+- Use named addressing for convenience: getAgentByName<Env, AgentType>(env.AIAgent, 'name')
+- Use Durable Objects-style addressing for custom ID generation and control
+
+## AI Guidelines
+- Use Workers AI as default AI API for inference requests
+- Use AI Gateway for caching, logging and instrumenting AI requests when appropriate
+- Implement structured JSON outputs with JSON mode for AI responses
+- Use response_format with json_schema for structured AI outputs
+- Use OpenAI SDK with proper API key management
+- Support both json_schema and json_object response formats
+- Implement proper error handling for AI API calls
+- Use streaming responses from AI SDKs when possible
+- Include proper TypeScript interfaces for AI response schemas
+
+## AI Coding Assistant Guidelines
+- Use AI coding assistants for code generation, debugging, and optimization
+- Implement proper prompt engineering for coding tasks
+- Use structured outputs for code generation and analysis
+- Implement proper validation for AI-generated code
+- Use appropriate AI models for different coding tasks
+- Implement proper security measures for AI coding operations
+- Use proper logging and monitoring for AI coding activities
+- Implement proper rate limiting for AI coding requests
+- Use streaming responses for real-time code assistance
+- Implement proper error handling for AI coding operations
+- Use proper code review and testing for AI-generated code
+- Implement proper version control for AI-assisted development
+- Use appropriate AI models for code generation vs. analysis
+- Implement proper context management for AI coding sessions
+- Use proper documentation for AI-assisted code
+- Implement proper testing strategies for AI-generated code
+- Use proper security scanning for AI-generated code
+- Implement proper backup and recovery for AI coding sessions
+- Use proper collaboration tools for AI-assisted development
+- Implement proper quality assurance for AI-generated code
+
+## AI Model Selection Guidelines
+- Use GPT-4 for complex code generation and analysis
+- Use GPT-3.5-turbo for simple code tasks and debugging
+- Use Claude for code review and optimization
+- Use CodeLlama for code-specific tasks and generation
+- Use appropriate models for different programming languages
+- Consider model costs and performance requirements
+- Use fine-tuned models for domain-specific coding tasks
+- Implement proper model fallback strategies
+- Use appropriate models for different code complexity levels
+- Consider model context length for large codebases
+
+## AI Prompt Engineering Guidelines
+- Use clear and specific prompts for coding tasks
+- Include proper context and requirements in prompts
+- Use structured prompts for complex coding tasks
+- Implement proper prompt validation and sanitization
+- Use few-shot learning for complex coding patterns
+- Implement proper prompt versioning and management
+- Use appropriate prompt templates for different tasks
+- Implement proper prompt optimization strategies
+- Use proper context management for long coding sessions
+- Implement proper prompt security measures
+
+## AI Code Validation Guidelines
+- Implement proper syntax validation for AI-generated code
+- Use proper linting and formatting tools
+- Implement proper security scanning for AI-generated code
+- Use proper testing strategies for AI-generated code
+- Implement proper code review processes
+- Use proper version control for AI-assisted development
+- Implement proper backup and recovery strategies
+- Use proper documentation standards for AI-generated code
+- Implement proper quality assurance processes
+- Use proper collaboration tools for AI-assisted development
+
+## WebSocket Advanced Guidelines
+- Handle WebSocket upgrade requests explicitly with Upgrade header validation
+- Use fan-in/fan-out patterns for WebSocket management in Durable Objects
+- Implement proper error handling for WebSocket connections
+- Use this.ctx.getWebSockets() to track active connections
+- Implement proper connection lifecycle management
+- Handle WebSocket errors gracefully with webSocketError handler
+- Use proper WebSocket close codes and reasons
+
+## Examples
+### Basic Hono Worker Example
+```typescript
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { prettyJSON } from "hono/pretty-json";
+
+interface Env {
+  DB: D1Database;
+  KV: KVNamespace;
+  AI: Ai;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+// Middleware
+app.use("*", logger());
+app.use("*", cors());
+app.use("*", prettyJSON());
+
+// Routes
+app.get("/", (c) => c.json({ message: "Hello Hono!" }));
+
+app.get("/users/:id", async (c) => {
+  const id = c.req.param("id");
+  const user = await c.env.DB.prepare("SELECT * FROM users WHERE id = ?").bind(id).first();
+  return c.json(user);
+});
+
+app.post("/users", async (c) => {
+  const body = await c.req.json();
+  const result = await c.env.DB.prepare("INSERT INTO users (name, email) VALUES (?, ?)")
+    .bind(body.name, body.email)
+    .run();
+  return c.json({ id: result.meta.last_row_id });
+});
+
+export default app;
+```
+
+### Wrangler Configuration Example
+```jsonc
+{
+  "name": "hono-app",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "binding": "AIAgent",
+        "class_name": "AIAgent"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["AIAgent"]
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "my-database",
+      "database_id": "your-database-id"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "your-kv-namespace-id"
+    }
+  ]
+}
+```
+
+### WebSocket Durable Object Example
+```typescript
+export class WebSocketServer extends DurableObject {
+  async fetch(request: Request) {
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
+
+    this.ctx.acceptWebSocket(server);
+
+    return new Response(null, {
+      status: 101,
+      webSocket: client,
+    });
+  }
+
+  async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
+    ws.send(`[Server]: ${message}`);
+  }
+
+  async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
+    ws.close(code, "Server closing connection");
+  }
+}
+```
+
+### WebSocket Fan-in/Fan-out Example
+```typescript
+export class WebSocketHibernationServer extends DurableObject {
+  async fetch(request: Request) {
+    const webSocketPair = new WebSocketPair();
+    const [client, server] = Object.values(webSocketPair);
+
+    this.ctx.acceptWebSocket(server);
+
+    return new Response(null, {
+      status: 101,
+      webSocket: client,
+    });
+  }
+
+  async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
+    // Fan-out: Send message to all connected clients
+    const connections = this.ctx.getWebSockets();
+    connections.forEach(connection => {
+      connection.send(`[Broadcast]: ${message}`);
+    });
+  }
+
+  async webSocketClose(ws: WebSocket, code: number, reason: string, wasClean: boolean) {
+    ws.close(code, "Server closing connection");
+  }
+
+  async webSocketError(ws: WebSocket, error: unknown) {
+    console.error('WebSocket error:', error);
+    ws.close(1011, "Internal error");
+  }
+}
+```
+
+### Agent Class Example
+```typescript
+export class AIAgent extends Agent<Env, MyState> {
+  async onRequest(request: Request) {
+    // Handle HTTP requests
+    return new Response("Hello from Agent");
+  }
+
+  async onConnect(connection: Connection) {
+    await this.initiate(connection);
+    connection.accept();
+  }
+
+  async onMessage(connection: Connection, message: WSMessage) {
+    // Handle WebSocket messages
+  }
+}
+```
+
+### Agent with Scheduling Example
+```typescript
+export class AIAgent extends Agent<Env, MyState> {
+  async onRequest(request: Request) {
+    // Schedule a task that runs every 5 minutes
+    await this.schedule("*/5 * * * *", "checkStatus", { userId: "user123" });
+
+    return new Response("Task scheduled");
+  }
+
+  async checkStatus(data: { userId: string }) {
+    // This method will be called by the scheduler
+    const status = await this.checkUserStatus(data.userId);
+    await this.setState({ lastCheck: new Date(), status });
+  }
+
+  async checkUserStatus(userId: string) {
+    // Use SQL API for database queries
+    const result = await this.sql`SELECT status FROM users WHERE id = ${userId}`;
+    return result[0]?.status || 'unknown';
+  }
+}
+```
+
+### AI Structured Output Example with Hono
+```typescript
+import { Hono } from "hono";
+import { OpenAI } from "openai";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
+interface Env {
+  OPENAI_API_KEY: string;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+const CalendarEventSchema = {
+  type: 'object',
+  properties: {
+    name: { type: 'string' },
+    date: { type: 'string' },
+    participants: { type: 'array', items: { type: 'string' } },
+  },
+  required: ['name', 'date', 'participants']
+};
+
+const extractEventSchema = z.object({
+  text: z.string().min(1, "Text is required")
+});
+
+app.post("/extract-event", zValidator("json", extractEventSchema), async (c) => {
+  try {
+    const { text } = c.req.valid("json");
+
+    const client = new OpenAI({
+      apiKey: c.env.OPENAI_API_KEY,
+      // Optional: use AI Gateway
+      // baseUrl: "https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai"
+    });
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o-2024-08-06',
+      messages: [
+        { role: 'system', content: 'Extract the event information.' },
+        { role: 'user', content: text },
+      ],
+      response_format: {
+        type: 'json_schema',
+        schema: CalendarEventSchema,
+      },
+    });
+
+    const event = response.choices[0].message.parsed;
+    return c.json({ calendar_event: event });
+  } catch (error) {
+    console.error('AI extraction error:', error);
+    return c.json({ error: 'Failed to extract event' }, 500);
+  }
+});
+
+export default app;
+```
+
+### AI Coding Assistant Example with Hono
+```typescript
+import { Hono } from "hono";
+import { OpenAI } from "openai";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
+interface Env {
+  OPENAI_API_KEY: string;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+const CodeGenerationSchema = {
+  type: 'object',
+  properties: {
+    code: { type: 'string' },
+    explanation: { type: 'string' },
+    tests: { type: 'string' },
+    documentation: { type: 'string' }
+  },
+  required: ['code', 'explanation']
+};
+
+const codeGenerationSchema = z.object({
+  language: z.string().min(1, "Language is required"),
+  task: z.string().min(1, "Task is required"),
+  requirements: z.array(z.string()).min(1, "At least one requirement is needed"),
+  context: z.string().optional()
+});
+
+app.post("/generate-code", zValidator("json", codeGenerationSchema), async (c) => {
+  try {
+    const body = c.req.valid("json");
+
+    const client = new OpenAI({
+      apiKey: c.env.OPENAI_API_KEY,
+    });
+
+    const prompt = `Generate ${body.language} code for the following task:
+Task: ${body.task}
+Requirements: ${body.requirements.join(', ')}
+${body.context ? `Context: ${body.context}` : ''}
+
+Please provide:
+1. Clean, well-documented code
+2. A clear explanation of the solution
+3. Unit tests for the code
+4. Documentation comments
+
+Use best practices and follow ${body.language} conventions.`;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o-2024-08-06',
+      messages: [
+        { role: 'system', content: 'You are an expert software developer. Generate high-quality, production-ready code with proper error handling, tests, and documentation.' },
+        { role: 'user', content: prompt }
+      ],
+      response_format: {
+        type: 'json_schema',
+        schema: CodeGenerationSchema,
+      },
+      temperature: 0.3,
+      max_tokens: 4000,
+    });
+
+    const result = response.choices[0].message.parsed;
+
+    return c.json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error('AI coding assistant error:', error);
+    return c.json({
+      success: false,
+      error: 'Failed to generate code'
+    }, 500);
+  }
+});
+
+export default app;
+```
+
+### AI Code Review Example with Hono
+```typescript
+import { Hono } from "hono";
+import { OpenAI } from "openai";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
+interface Env {
+  OPENAI_API_KEY: string;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+const CodeReviewSchema = {
+  type: 'object',
+  properties: {
+    issues: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          severity: { type: 'string', enum: ['low', 'medium', 'high', 'critical'] },
+          line: { type: 'number' },
+          message: { type: 'string' },
+          suggestion: { type: 'string' }
+        },
+        required: ['severity', 'message']
+      }
+    },
+    suggestions: { type: 'array', items: { type: 'string' } },
+    score: { type: 'number' },
+    summary: { type: 'string' }
+  },
+  required: ['issues', 'suggestions', 'score', 'summary']
+};
+
+const codeReviewSchema = z.object({
+  code: z.string().min(1, "Code is required"),
+  language: z.string().min(1, "Language is required"),
+  context: z.string().optional()
+});
+
+app.post("/review-code", zValidator("json", codeReviewSchema), async (c) => {
+  try {
+    const body = c.req.valid("json");
+
+    const client = new OpenAI({
+      apiKey: c.env.OPENAI_API_KEY,
+    });
+
+    const prompt = `Review the following ${body.language} code for:
+- Security vulnerabilities
+- Performance issues
+- Code quality and best practices
+- Potential bugs
+- Maintainability concerns
+
+Code:
+\`\`\`${body.language}
+${body.code}
+\`\`\`
+
+${body.context ? `Context: ${body.context}` : ''}
+
+Provide a comprehensive code review with:
+1. Specific issues found (with severity levels)
+2. Improvement suggestions
+3. Overall code quality score (1-10)
+4. Summary of findings
+
+Focus on actionable feedback that improves code quality and security.`;
+
+    const response = await client.chat.completions.create({
+      model: 'gpt-4o-2024-08-06',
+      messages: [
+        { role: 'system', content: 'You are an expert code reviewer with deep knowledge of software engineering best practices, security, and performance optimization.' },
+        { role: 'user', content: prompt }
+      ],
+      response_format: {
+        type: 'json_schema',
+        schema: CodeReviewSchema,
+      },
+      temperature: 0.2,
+      max_tokens: 3000,
+    });
+
+    const result = response.choices[0].message.parsed;
+
+    return c.json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error('AI code review error:', error);
+    return c.json({
+      success: false,
+      error: 'Failed to review code'
+    }, 500);
+  }
+});
+
+export default app;
+```
+
+### Hono with Middleware Example
+```typescript
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { logger } from "hono/logger";
+import { rateLimiter } from "hono/rate-limiter";
+import { jwt } from "hono/jwt";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+
+interface Env {
+  JWT_SECRET: string;
+  DB: D1Database;
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+// Global middleware
+app.use("*", logger());
+app.use("*", cors({
+  origin: ["https://example.com"],
+  allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
+  allowMethods: ["POST", "GET", "OPTIONS"],
+}));
+
+// Rate limiting
+app.use("/api/*", rateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // limit each IP to 100 requests per windowMs
+}));
+
+// JWT authentication middleware
+app.use("/api/protected/*", jwt({
+  secret: (c) => c.env.JWT_SECRET,
+}));
+
+// Validation schemas
+const createUserSchema = z.object({
+  name: z.string().min(1),
+  email: z.string().email(),
+  age: z.number().min(0).max(120),
+});
+
+// Routes
+app.get("/", (c) => c.text("Hello Hono!"));
+
+app.get("/api/users", async (c) => {
+  const users = await c.env.DB.prepare("SELECT * FROM users").all();
+  return c.json(users);
+});
+
+app.post("/api/users", zValidator("json", createUserSchema), async (c) => {
+  const user = c.req.valid("json");
+  const result = await c.env.DB
+    .prepare("INSERT INTO users (name, email, age) VALUES (?, ?, ?)")
+    .bind(user.name, user.email, user.age)
+    .run();
+
+  return c.json({ id: result.meta.last_row_id }, 201);
+});
+
+app.get("/api/protected/profile", (c) => {
+  const payload = c.get("jwtPayload");
+  return c.json({ user: payload });
+});
+
+export default app;
+```
+
+### Hono with Durable Objects Example
+```typescript
+import { Hono } from "hono";
+import { DurableObject } from "cloudflare:workers";
+
+interface Env {
+  COUNTER: DurableObjectNamespace;
+}
+
+class Counter extends DurableObject {
+  async fetch(request: Request) {
+    const url = new URL(request.url);
+    const action = url.searchParams.get("action");
+
+    if (action === "increment") {
+      const count = await this.ctx.storage.get<number>("count") || 0;
+      await this.ctx.storage.put("count", count + 1);
+      return new Response(JSON.stringify({ count: count + 1 }));
+    }
+
+    if (action === "get") {
+      const count = await this.ctx.storage.get<number>("count") || 0;
+      return new Response(JSON.stringify({ count }));
+    }
+
+    return new Response("Invalid action", { status: 400 });
+  }
+}
+
+const app = new Hono<{ Bindings: Env }>();
+
+app.get("/counter/:id", async (c) => {
+  const id = c.req.param("id");
+  const counterId = c.env.COUNTER.idFromName(id);
+  const counter = c.env.COUNTER.get(counterId);
+
+  const response = await counter.fetch(new Request(`${c.req.url}?action=get`));
+  const data = await response.json();
+
+  return c.json(data);
+});
+
+app.post("/counter/:id/increment", async (c) => {
+  const id = c.req.param("id");
+  const counterId = c.env.COUNTER.idFromName(id);
+  const counter = c.env.COUNTER.get(counterId);
+
+  const response = await counter.fetch(new Request(`${c.req.url}?action=increment`));
+  const data = await response.json();
+
+  return c.json(data);
+});
+
+export default app;
+export { Counter };
+```
+
+### React Agent Client Example
+```typescript
+// React client hook for the agents
+import { useAgent } from "agents/react";
+import { useState } from "react";
+
+function AgentInterface() {
+  const connection = useAgent({
+    agent: "dialogue-agent",
+    name: "insight-seeker",
+    onMessage: (message) => {
+      console.log("Understanding received:", message.data);
+    },
+    onOpen: () => console.log("Connection established"),
+    onClose: () => console.log("Connection closed"),
+  });
+
+  const inquire = () => {
+    connection.send(JSON.stringify({
+      type: "inquiry",
+      content: "What insights have you gathered?",
+    }));
+  };
+
+  return (
+    <div>
+      <button onClick={inquire}>Seek Understanding</button>
+    </div>
+  );
+}
+
+function StateInterface() {
+  const [state, setState] = useState({ counter: 0 });
+  const agent = useAgent({
+    agent: "thinking-agent",
+    onStateUpdate: (newState) => setState(newState),
+  });
+
+  const increment = () => {
+    agent.setState({ counter: state.counter + 1 });
+  };
+
+  return (
+    <div>
+      <p>Count: {state.counter}</p>
+      <button onClick={increment}>Increment</button>
+    </div>
+  );
+}
+```
+
+## Service-Specific Guidelines
+
+### Hono Framework Integration
+- Use Hono's context object (c.env) to access Cloudflare bindings
+- Implement proper error handling with Hono's error handling middleware
+- Use Hono's built-in validation with Zod schemas for request validation
+- Leverage Hono's middleware system for cross-cutting concerns
+- Use Hono's type-safe routing and parameter extraction
+- Implement proper CORS handling with Hono's CORS middleware
+- Use Hono's rate limiting middleware for API protection
+- Leverage Hono's compression middleware for response optimization
+- Use Hono's logger middleware for structured logging
+- Implement proper authentication with Hono's JWT middleware
+- Use Hono's sub-apps for modular route organization
+- Leverage Hono's testing utilities for comprehensive test coverage
+
+### Durable Objects with Hono
+- Use for strongly consistent state management and storage
+- Implement proper error handling with try-catch blocks
+- Use this.ctx.waitUntil() for background operations
+- Implement proper cleanup in webSocketClose handlers
+- Use this.ctx.getWebSockets() to track active connections
+- Consider using this.ctx.scheduledTime for time-based operations
+- Use Hono context to access Durable Object bindings from main app
+- Implement proper routing between Hono app and Durable Objects
+
+### Workers KV with Hono
+- Use for key-value storage and configuration data
+- Implement proper error handling for KV operations
+- Use appropriate TTL values for cached data
+- Consider using KV for A/B testing and feature flags
+- Implement retry logic for failed KV operations
+- Access KV through Hono context: c.env.KV
+- Use Hono middleware for KV-based caching strategies
+
+### D1 Database with Hono
+- Use for relational data and SQL operations
+- Implement proper SQL injection prevention
+- Use parameterized queries with D1 prepared statements
+- Implement connection pooling best practices
+- Use transactions for multi-step operations
+- Access D1 through Hono context: c.env.DB
+- Use Hono validation middleware for database input validation
+- Implement proper error handling for database operations
+
+### R2 Storage with Hono
+- Use for object storage and file uploads
+- Implement proper content-type headers
+- Use presigned URLs for secure file access
+- Implement proper error handling for upload failures
+- Consider using R2 for AI assets and image storage
+- Access R2 through Hono context: c.env.R2
+- Use Hono middleware for file upload validation
+- Implement proper streaming for large file operations
+
+### Queues with Hono
+- Use for asynchronous processing and background tasks
+- Implement proper error handling and retry logic
+- Use batch processing when possible
+- Implement dead letter queues for failed messages
+- Consider using queues for email notifications and webhooks
+- Access Queues through Hono context: c.env.QUEUE
+- Use Hono middleware for queue message validation
+- Implement proper error handling for queue operations
+
+### Workers AI with Hono
+- Use as default AI API for inference requests
+- Implement proper rate limiting and error handling
+- Use streaming responses when possible
+- Implement proper prompt engineering practices
+- Consider using AI Gateway for enhanced features
+- Access AI through Hono context: c.env.AI
+- Use Hono validation middleware for AI request validation
+- Implement proper error handling for AI operations
+
+### Hyperdrive with Hono
+- Use to connect to existing PostgreSQL databases
+- Implement proper connection pooling
+- Use prepared statements for performance
+- Implement proper error handling for connection failures
+- Consider using for legacy system integration
+- Access Hyperdrive through Hono context: c.env.HYPERDRIVE
+- Use Hono middleware for database connection management
+- Implement proper error handling for database operations
+
+### AI Coding Services with Hono
+- Use AI coding assistants for code generation and review
+- Implement proper prompt engineering for coding tasks
+- Use structured outputs for code analysis
+- Implement proper validation for AI-generated code
+- Use appropriate AI models for different coding tasks
+- Implement proper security measures for AI coding operations
+- Use proper logging and monitoring for AI coding activities
+- Implement proper rate limiting for AI coding requests
+- Use streaming responses for real-time code assistance
+- Implement proper error handling for AI coding operations
+- Use Hono validation middleware for AI request validation
+- Implement proper error handling for AI operations
+
+## Error Handling Guidelines
+- Implement proper error boundaries and try-catch blocks
+- Return appropriate HTTP status codes (400, 401, 403, 404, 500)
+- Provide meaningful error messages without exposing internals
+- Log errors appropriately with proper context
+- Handle edge cases gracefully
+- Implement proper validation for all inputs
+- Use proper error types and interfaces
+- Implement retry logic for transient failures
+- Use proper error codes for different failure types
+- Handle AI-specific errors gracefully
+- Implement proper fallback strategies for AI failures
+- Use proper error reporting for AI coding operations
+- Use Hono's error handling middleware for centralized error management
+- Implement proper error responses with Hono's response helpers
+- Use Hono's validation middleware for input validation and error responses
+- Implement proper error logging with Hono's logger middleware
+- Use Hono's context for error context and debugging information
+- Implement proper error boundaries in Hono route handlers
+- Use Hono's error handling patterns for consistent error responses
+- Implement proper error handling for Cloudflare service failures
+- Use Hono's error handling for WebSocket connection errors
+- Implement proper error handling for Durable Object operations
+
+## Security Guidelines
+- Never bake secrets into code
+- Use environment variables for sensitive data
+- Implement proper authentication and authorization
+- Use least privilege principle for bindings
+- Sanitize all user inputs
+- Implement proper CORS policies
+- Use HTTPS for all external communications
+- Implement rate limiting where appropriate
+- Use proper security headers
+- Validate all incoming requests
+- Implement proper security scanning for AI-generated code
+- Use proper access controls for AI coding operations
+- Implement proper audit logging for AI activities
+- Use proper encryption for AI data and communications
+- Implement proper input validation for AI prompts
+- Use Hono's CORS middleware for proper cross-origin resource sharing
+- Implement proper authentication with Hono's JWT middleware
+- Use Hono's rate limiting middleware for API protection
+- Implement proper input validation with Hono's Zod validation middleware
+- Use Hono's security middleware for common security headers
+- Implement proper error handling to avoid information disclosure
+- Use Hono's context for secure access to environment variables
+- Implement proper request validation with Hono's validation patterns
+- Use Hono's middleware for security-related cross-cutting concerns
+- Implement proper session management with Hono's session middleware
+- Use Hono's CSRF protection middleware where appropriate
+
+## Performance Guidelines
+- Optimize for cold starts
+- Minimize unnecessary computation
+- Use appropriate caching strategies
+- Consider Workers limits and quotas
+- Implement streaming where beneficial
+- Use proper async/await patterns
+- Minimize external API calls
+- Use appropriate data structures
+- Implement proper connection pooling
+- Consider using edge caching strategies
+- Optimize AI model selection for performance
+- Implement proper caching for AI responses
+- Use streaming for large AI operations
+- Optimize prompt engineering for efficiency
+- Implement proper rate limiting for AI operations
+- Use Hono's compression middleware for response optimization
+- Implement proper caching with Hono's caching middleware
+- Use Hono's streaming capabilities for large responses
+- Optimize Hono route handlers for performance
+- Use Hono's sub-apps for modular and efficient routing
+- Implement proper middleware composition for performance
+- Use Hono's built-in optimizations for request handling
+- Leverage Hono's type-safe routing for better performance
+- Use Hono's context for efficient access to bindings
+- Implement proper error handling to avoid performance penalties
+- Use Hono's testing utilities for performance testing
+
+## AI Development Workflow Guidelines
+- Use AI coding assistants for initial code generation
+- Implement proper code review for AI-generated code
+- Use AI for code optimization and refactoring
+- Implement proper testing for AI-generated code
+- Use AI for documentation generation
+- Implement proper version control for AI-assisted development
+- Use AI for code analysis and debugging
+- Implement proper quality assurance for AI-generated code
+- Use AI for performance optimization
+- Implement proper collaboration tools for AI-assisted development
+- Use AI for security analysis and vulnerability detection
+- Implement proper backup and recovery for AI coding sessions
+- Use AI for code migration and modernization
+- Implement proper monitoring for AI-assisted development
+- Use AI for code maintenance and updates
+- Use AI coding assistants for Hono-specific code generation
+- Implement proper Hono pattern validation for AI-generated code
+- Use AI for Hono middleware optimization and refactoring
+- Implement proper testing for AI-generated Hono applications
+- Use AI for Hono documentation generation
+- Implement proper version control for AI-assisted Hono development
+- Use AI for Hono code analysis and debugging
+- Implement proper quality assurance for AI-generated Hono code
+- Use AI for Hono performance optimization
+- Implement proper collaboration tools for AI-assisted Hono development
+- Use AI for Hono security analysis and vulnerability detection
+- Implement proper backup and recovery for AI coding sessions
+- Use AI for Hono code migration and modernization
+- Implement proper monitoring for AI-assisted Hono development
+- Use AI for Hono code maintenance and updates

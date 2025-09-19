@@ -1,0 +1,67 @@
+{
+	"name": "ingest-service",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-03-07",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true,
+		"head_sampling_rate": 1
+	},
+	"routes": [
+		{
+			"pattern": "ingest.contentworker.io",
+			"custom_domain": true
+		}
+	],
+	"workflows": [
+		{
+			"binding": "DOCUMENT_PROCESSING_WORKFLOW",
+			"name": "document-processing-workflow",
+			"class_name": "DocumentProcessingWorkflow"
+		}
+	],
+	"queues": {
+		"producers": [
+			{
+				"binding": "DOCUMENT_INGESTION_QUEUE",
+				"queue": "document-ingestion"
+			},
+			{
+				"binding": "WEBHOOK_PROCESSING_QUEUE",
+				"queue": "webhook-processing"
+			},
+			{
+				"binding": "BATCH_REPROCESSING_QUEUE",
+				"queue": "batch-reprocessing"
+			}
+		]
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "DOCUMENT_COORDINATOR",
+				"class_name": "DocumentCoordinator",
+				"script_name": "queue-processor"
+			}
+		]
+	},
+	"r2_buckets": [
+		{
+			"binding": "DOCS_BUCKET",
+			"bucket_name": "rag-documents"
+		}
+	],
+	"ai": {
+		"binding": "AI"
+	},
+	"vectorize": [
+		{
+			"binding": "VECTORIZE_INDEX",
+			"index_name": "rag-embeddings-with-metadata"
+		}
+	],
+	"vars": {
+		"VECTORIZE_INDEX_ID": "rag-embeddings",
+		"AI_ACCOUNT_ID": "2d19b3b18648f0776ff1435cba466210"
+	}
+}

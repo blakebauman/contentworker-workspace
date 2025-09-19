@@ -1,0 +1,13 @@
+{
+	"extends": "@repo/typescript-config/workers.json",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@repo/hono-helpers": ["../../packages/hono-helpers/src"],
+			"@repo/rag-types": ["../../packages/rag-types/src"],
+			"@repo/workspace-dependencies": ["../../packages/workspace-dependencies/src"]
+		}
+	},
+	"include": ["src/**/*", "*.ts"],
+	"exclude": ["node_modules", "dist"]
+}

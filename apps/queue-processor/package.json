@@ -1,0 +1,32 @@
+{
+	"name": "queue-processor",
+	"version": "1.0.0",
+	"description": "Cloudflare Worker for processing RAG documents via queues",
+	"type": "module",
+	"main": "src/index.ts",
+	"scripts": {
+		"build": "../../packages/tools/bin/run-wrangler-build",
+		"deploy": "../../packages/tools/bin/run-wrangler-deploy",
+		"dev": "../../packages/tools/bin/run-wrangler-dev --port 3002",
+		"test": "../../packages/tools/bin/run-vitest",
+		"test:ci": "../../packages/tools/bin/run-vitest-ci",
+		"types": "../../packages/tools/bin/run-wrangler-types"
+	},
+	"dependencies": {
+		"@hono/zod-validator": "0.7.2",
+		"@repo/hono-helpers": "workspace:*",
+		"@repo/rag-types": "workspace:*",
+		"@repo/workspace-dependencies": "workspace:*",
+		"hono": "4.9.7"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "0.9.2",
+		"@cloudflare/workers-types": "4.20250917.0",
+		"@repo/eslint-config": "workspace:*",
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "24.5.1",
+		"eslint": "9.35.0",
+		"typescript": "5.9.2",
+		"vitest": "3.2.4"
+	}
+}
